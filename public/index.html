@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Space Lord</title>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="/socket.io/socket.io.min.js"></script>
+    <script src="scripts/socket.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/registration.js"></script>
+    <script src="scripts/authentication.js"></script>
+    <script src="scripts/spaceship.js"></script>
+    <script src="scripts/shield.js"></script>
+    <script src="scripts/planet.js"></script>
+    <script src="scripts/meteorites.js"></script>
+    <script src="scripts/bullet.js"></script>
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="top-container">
+        <div id="title">Space Lord</div>
+        <div id="user-panel">
+            <div id="username"></div>
+            <button id="signout-button" class="button">Sign Out
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+                    <path fill-rule="evenodd"
+                        d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                </svg>
+            </button>
+        </div>
+        <div id="main">
+            <button id="front-page-controll"></button>
+            <div id="signin-register-container">
+                <form id="signin-form" class="form">
+                    <div class="form-title">Sign In</div>
+                    <div class="form-content">
+                        <input id="signin-username" placeholder="Enter your username"></input>
+                        <input id="signin-password" type="password" placeholder="Enter your password"></input>
+                        <button type="submit" class="auth-button">Sign In</button>
+                    </div>
+                    <div id="signin-message" class="form-message"></div>
+                </form>
+
+                <form id="register-form" class="form">
+                    <div class="form-title">Register</div>
+                    <div class="form-content">
+                        <input id="register-username" maxlength="10" placeholder="Enter your username"></input>
+                        <input id="register-password" type="password" placeholder="Enter your password"></input>
+                        <input id="register-confirm" type="password" placeholder="Enter your password again"></input>
+                        <button type="submit" class="auth-button">Register</button>
+                    </div>
+
+                    <div id="register-message" class="form-message"></div>
+                </form>
+            </div>
+            <div id="menu-container">
+                <div id="game-description-area">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div id="description">
+                                    <div id="des-header">Game Flow
+                                        <p class="des-text">
+                                            <br>
+                                            In this game, shield energy is treated as scores. The winning condition is
+                                            to earn the
+                                            most shield
+                                            energy when the time is up. <br>During the game, the spaceship controlled by
+                                            a
+                                            player can shoot
+                                            bullets at other spaceships to consume their shield energy. On the other
+                                            hand,
+                                            spaceships can collect
+                                            shield resources scattered in the game field to accumulate shield energy.
+                                            <br>Spaceships may
+                                            encounter floating meteorites in space. When a spaceship hits the meteorite,
+                                            the
+                                            spaceship's shield
+                                            energy will be reduced, or the spaceship's movement will be slowed for a
+                                            short
+                                            time.<br><br>
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row" id="resource-and-object">
+                                <div class="col-12 no-padding">
+                                    <div id="des-header">Shield Resource & Meteorite</div>
+                                </div>
+
+                                <div class="col-6 no-padding">
+                                    <img src="/assets/objects/shields/shield-speed.png"
+                                        style="position: absolute; clip: rect(0, 40px, 40px, 0); padding-left: 8px; padding-top: 8px;">
+                                    <div style="padding-left: 50px;" class="des-text">
+                                        <b>Speed Shield</b><br>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#5cb85c"
+                                            class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                                        </svg>
+                                        Movement Speed of Spaceship
+                                    </div>
+                                </div>
+
+                                <div class="col-6 no-padding">
+                                    <img src="/assets/objects/shields/shield-energy.png"
+                                        style="position: absolute; clip: rect(0, 40px, 40px, 0); padding-left: 8px; padding-top: 8px;">
+                                    <div style="padding-left: 50px;" class="des-text">
+                                        <b>Energy Shield</b><br>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#5cb85c"
+                                            class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                                        </svg>
+                                        Shield Energy of Spaceship
+                                    </div>
+                                </div>
+
+                                <div class="col-12 no-padding"><br></div>
+
+                                <div class="col-6 no-padding">
+                                    <img src="/assets/objects/meteorites/meteorite-speed.png"
+                                        style="position: absolute; clip: rect(0, 48px, 48px, 0);">
+                                    <div style="padding-left: 50px;" class="des-text">
+                                        <b>Speed Meteorite</b><br>
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#d9534f"
+                                            class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+                                        </svg>
+                                        Movement Speed of Spaceship
+                                    </div>
+                                </div>
+
+                                <div class="col-6 no-padding">
+                                    <img src="/assets/objects/meteorites/meteorite-energy.png"
+                                        style="position: absolute; clip: rect(0, 48px, 48px, 0);">
+                                    <div style="padding-left: 50px;" class="des-text">
+                                        <b>Energy Meteorite</b><br>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#d9534f"
+                                            class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+                                        </svg>
+                                        Shield Energy of Spaceship
+                                    </div>
+                                </div>
+
+                                <div class="col-12 no-padding">
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 no-padding">
+                            <br>
+                        </div>
+                        <div class="col-lg-5 no-padding">
+                            <div class="col-12 no-padding">
+                                <div id="des-header">Game Control<br>
+                                </div>
+
+                                <div class="col-12">
+                                    <div style="padding-left: 36px; position: absolute; padding-top: 16px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                            fill="currentColor" class="bi bi-c-square-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2Zm6.146 4.992c-1.212 0-1.927.92-1.927 2.502v1.06c0 1.571.703 2.462 1.927 2.462.979 0 1.641-.586 1.729-1.418h1.295v.093c-.1 1.448-1.354 2.467-3.03 2.467-2.091 0-3.269-1.336-3.269-3.603V7.482c0-2.261 1.201-3.638 3.27-3.638 1.681 0 2.935 1.054 3.029 2.572v.088H9.875c-.088-.879-.768-1.512-1.729-1.512Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="des-text" style="padding-left: 120px;">
+                                        <b>Cheat Key C</b><br>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#5cb85c"
+                                            class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                                        </svg>
+                                        Movement Speed<br>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#5cb85c"
+                                            class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                                        </svg>
+                                        Positive Resource Effects<br>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <br>
+                                </div>
+                                <div class="col-12">
+                                    <div style="padding-left: 0px; position: absolute;">
+                                        <div style="padding-left: 36px; padding-bottom: 5px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                fill="currentColor" class="bi bi-caret-up-square-fill"
+                                                viewBox="0 0 16 16">
+                                                <path
+                                                    d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4 9h8a.5.5 0 0 0 .374-.832l-4-4.5a.5.5 0 0 0-.748 0l-4 4.5A.5.5 0 0 0 4 11z" />
+                                            </svg>
+                                        </div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                            fill="currentColor" class="bi bi-caret-left-square-fill"
+                                            viewBox="0 0 16 16">
+                                            <path
+                                                d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm10.5 10V4a.5.5 0 0 0-.832-.374l-4.5 4a.5.5 0 0 0 0 .748l4.5 4A.5.5 0 0 0 10.5 12z" />
+                                        </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                            fill="currentColor" class="bi bi-caret-down-square-fill"
+                                            viewBox="0 0 16 16">
+                                            <path
+                                                d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4 4a.5.5 0 0 0-.374.832l4 4.5a.5.5 0 0 0 .748 0l4-4.5A.5.5 0 0 0 12 6H4z" />
+                                        </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                            fill="currentColor" class="bi bi-caret-right-square-fill"
+                                            viewBox="0 0 16 16">
+                                            <path
+                                                d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm5.5 10a.5.5 0 0 0 .832.374l4.5-4a.5.5 0 0 0 0-.748l-4.5-4A.5.5 0 0 0 5.5 4v8z" />
+                                        </svg>
+                                    </div>
+                                    <div class="des-text" style="padding-left: 120px; padding-top: 0px;">
+                                        <b>Arrow keys</b><br>
+                                        Control the Spaceship Movement
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <br><br>
+                                </div>
+                                <div class="col-12">
+                                    <div
+                                        style="padding-left: 18px; position: absolute; padding-top: 8px; transform: scale(3, 1);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                            fill="currentColor" class="bi bi-square-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z" />
+                                        </svg>
+                                    </div>
+                                    <div class="des-text" style="padding-left: 120px;">
+                                        <b>Spacebar key</b><br>
+                                        Fire bullets to the opponent
+                                    </div>
+                                </div>
+
+                            </div>
+                            <button id="start-game-button" style="width: 100%;">Start Game!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="online-users-panel">
+                <div id="online-users-area-title">Game Lobby
+                </div>
+                <div id="online-users-area">
+                </div>
+                <br>
+                <tspan style="font-size: max(1vw, 14px);">Pairing Up For You Now. Please Wait...</tspan>
+                <div class="pairing"></div>
+            </div>
+            <div id="gameplay-area">
+                <div style="position: absolute; left: 0; right: 0;">
+                    <canvas width="600px" height="600px"
+                        style="display: inline; border: 1px solid #D3D3D3; border-radius: 10px; width: 600px;"></canvas>
+                </div>
+                <div style="margin: 0 auto;">
+                    <div class="timer-card" style="left: 35%">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-clock-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
+                        </svg>
+                        <tspan style="font-size: max(1vw, 14px);">Time Remaining </tspan>
+                        <tspan style="font-size: max(1vw, 14px);" id="time1">180</tspan>s
+                    </div>
+                    <div id="player-card1" class="player-card" style="left: 12.5%">
+                        <div class="row">
+                            <div class="col-5" style="display: flex; align-items: center; text-align: left;">
+                                <div>
+                                    <tspan style="font-size: max(1vw, 14px);">Player 1</tspan><br>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-person-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                    </svg>
+                                    <tspan id="username1" style="font-size: max(1vw, 14px);">Username 1</tspan>
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <div class="row" style="text-align: left;">
+                                    <div class="col-12">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+                                            <path
+                                                d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2zM3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.389.389 0 0 0-.029-.518z" />
+                                            <path fill-rule="evenodd"
+                                                d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.945 11.945 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0z" />
+                                        </svg>
+                                        <tspan style="font-size: max(1vw, 14px);">Speed</tspan>
+                                        <div style="float: right;">
+                                            <tspan style="font-size: max(1vw, 14px);" id="speed1">0</tspan>
+                                            <tspan style="font-size: max(0.8vw, 10px);">km/s</tspan>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-12">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-shield-shaded" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M8 14.933a.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067v13.866zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
+                                        </svg>
+                                        <tspan style="font-size: max(1vw, 14px);">Shield</tspan>
+                                        <div style="float: right;">
+                                            <tspan style="font-size: max(1vw, 14px);" class="energy1">100</tspan>
+                                            <tspan style="font-size: max(0.8vw, 10px);">%</tspan>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-wrench-adjustable" viewBox="0 0 16 16">
+                                            <path
+                                                d="M16 4.5a4.492 4.492 0 0 1-1.703 3.526L13 5l2.959-1.11c.027.2.041.403.041.61Z" />
+                                            <path
+                                                d="M11.5 9c.653 0 1.273-.139 1.833-.39L12 5.5 11 3l3.826-1.53A4.5 4.5 0 0 0 7.29 6.092l-6.116 5.096a2.583 2.583 0 1 0 3.638 3.638L9.908 8.71A4.49 4.49 0 0 0 11.5 9Zm-1.292-4.361-.596.893.809-.27a.25.25 0 0 1 .287.377l-.596.893.809-.27.158.475-1.5.5a.25.25 0 0 1-.287-.376l.596-.893-.809.27a.25.25 0 0 1-.287-.377l.596-.893-.809.27-.158-.475 1.5-.5a.25.25 0 0 1 .287.376ZM3 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
+                                        </svg>
+                                        <tspan style="font-size: max(1vw, 14px);">Cheat</tspan>
+                                        <div style="float: right;">
+                                            <tspan style="font-size: max(1vw, 14px);" id="cheat1">OFF</tspan>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="player-card2" class="player-card" style="right: 12.5%">
+                        <div class="row">
+                            <div class="col-5" style="display: flex; align-items: center; text-align: left;">
+                                <div>
+                                    <tspan style="font-size: max(1vw, 14px);">Player 2</tspan><br>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-person-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                    </svg>
+                                    <tspan id="username2" style="font-size: max(1vw, 14px);">Username 2</tspan>
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <div class="row" style="text-align: left;">
+                                    <div class="col-12">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+                                            <path
+                                                d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2zM3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.389.389 0 0 0-.029-.518z" />
+                                            <path fill-rule="evenodd"
+                                                d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.945 11.945 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0z" />
+                                        </svg>
+                                        <tspan style="font-size: max(1vw, 14px);">Speed</tspan>
+                                        <div style="float: right;">
+                                            <tspan style="font-size: max(1vw, 14px);" id="speed2">0</tspan>
+                                            <tspan style="font-size: max(0.8vw, 10px);">km/s</tspan>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-12">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-shield-shaded" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M8 14.933a.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067v13.866zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
+                                        </svg>
+                                        <tspan style="font-size: max(1vw, 14px);">Shield</tspan>
+                                        <div style="float: right;">
+                                            <tspan style="font-size: max(1vw, 14px);" class="energy2">100</tspan>
+                                            <tspan style="font-size: max(0.8vw, 10px);">%</tspan>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-wrench-adjustable" viewBox="0 0 16 16">
+                                            <path
+                                                d="M16 4.5a4.492 4.492 0 0 1-1.703 3.526L13 5l2.959-1.11c.027.2.041.403.041.61Z" />
+                                            <path
+                                                d="M11.5 9c.653 0 1.273-.139 1.833-.39L12 5.5 11 3l3.826-1.53A4.5 4.5 0 0 0 7.29 6.092l-6.116 5.096a2.583 2.583 0 1 0 3.638 3.638L9.908 8.71A4.49 4.49 0 0 0 11.5 9Zm-1.292-4.361-.596.893.809-.27a.25.25 0 0 1 .287.377l-.596.893.809-.27.158.475-1.5.5a.25.25 0 0 1-.287-.376l.596-.893-.809.27a.25.25 0 0 1-.287-.377l.596-.893-.809.27-.158-.475 1.5-.5a.25.25 0 0 1 .287.376ZM3 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
+                                        </svg>
+                                        <tspan style="font-size: max(1vw, 14px);">Cheat</tspan>
+                                        <div style="float: right;">
+                                            <tspan style="font-size: max(1vw, 14px);" id="cheat2">OFF</tspan>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="gameover-area" style="width: 80%; left: 10%; right: 10%; bottom: 10%; position: absolute;">
+                <div class="gameover-card">
+                    <div class="row">
+                        <div class="col-12" style="text-align: center; padding: 20px 20px 20px 20px; color: yellow;">
+                            <h4 id="playerwintext"></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-4"
+                            style="background-color: rgb(156, 138, 239); border: 2px solid #D3D3D3; border-radius: 10px; padding: 10px 0px 10px 0px;">
+                            <h3 style="padding-left: 10px;">Ranks</h3>
+                            <div
+                                style="height: 50px; line-height: 50px; font-weight: bold; width: 100%; background-color: #e6c300;">
+                                <div style="width: 45px; float: left;">
+                                    <center>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white"
+                                            class="bi bi-trophy-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z" />
+                                        </svg>
+                                    </center>
+                                </div>
+                                <div style="float: left;">
+                                    <tspan class="playerwin"></tspan>
+                                </div>
+                                <div class="playerwinscore" style="float: right; padding-right: 10px;">
+
+                                </div>
+                            </div>
+                            <div style="height: 50px; line-height: 50px; background-color: #b3b3b3;">
+                                <div style="width: 45px; float: left; text-align: center;">
+                                    <div class="rankdraw">
+                                        <center>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white"
+                                                class="bi bi-trophy-fill" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z" />
+                                            </svg>
+                                        </center>
+                                    </div>
+                                    <div class="ranklose">
+                                        #2
+                                    </div>
+                                </div>
+                                <div style="float: left;">
+                                    <tspan class="playerlose"></tspan>
+                                </div>
+                                <div class="playerlosescore" style="float: right; padding-right: 10px;">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-5"
+                            style="background-color: #3366cc; border: 2px solid #D3D3D3; border-radius: 10px; padding: 10px 10px 10px 10px;">
+                            <h3>Statistics</h3>
+
+                            <div class="row">
+                                <div class="col-12" style="padding-bottom: 10px;">
+                                    <div style="float: left; font-weight: bold;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gold"
+                                            class="bi bi-trophy-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z" />
+                                        </svg>
+                                        <tspan class="playerwin"></tspan>
+                                    </div>
+                                    <div style="float: right; font-weight: bold;" class="rankdraw">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gold"
+                                            class="bi bi-trophy-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z" />
+                                        </svg>
+                                        <tspan class="playerlose"></tspan>
+                                    </div>
+                                    <div style="float: right; font-weight: bold;" class="ranklose">
+                                        <tspan class="playerlose"></tspan>
+                                    </div>
+                                </div>
+                                <div class="col-12" style="padding-bottom: 10px;">
+                                    <div style="width: 100%; text-align: center;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-shield-shaded" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                d="M8 14.933a.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067v13.866zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
+                                        </svg>
+                                        Shield Energy Remaining
+                                    </div>
+                                    <div class="progress">
+                                        <div id="shield-bar-win" class="progress-bar" role="progressbar"
+                                            style="background-color: #e6c300; color: #595959;"></div>
+                                        <div id="shield-bar-lose" class="progress-bar" role="progressbar"
+                                            style="background-color: #b3b3b3; color: #595959;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-12" style="padding-bottom: 10px;">
+                                    <div style="width: 100%; text-align: center;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-rocket-takeoff-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M12.17 9.53c2.307-2.592 3.278-4.684 3.641-6.218.21-.887.214-1.58.16-2.065a3.578 3.578 0 0 0-.108-.563 2.22 2.22 0 0 0-.078-.23V.453c-.073-.164-.168-.234-.352-.295a2.35 2.35 0 0 0-.16-.045 3.797 3.797 0 0 0-.57-.093c-.49-.044-1.19-.03-2.08.188-1.536.374-3.618 1.343-6.161 3.604l-2.4.238h-.006a2.552 2.552 0 0 0-1.524.734L.15 7.17a.512.512 0 0 0 .433.868l1.896-.271c.28-.04.592.013.955.132.232.076.437.16.655.248l.203.083c.196.816.66 1.58 1.275 2.195.613.614 1.376 1.08 2.191 1.277l.082.202c.089.218.173.424.249.657.118.363.172.676.132.956l-.271 1.9a.512.512 0 0 0 .867.433l2.382-2.386c.41-.41.668-.949.732-1.526l.24-2.408Zm.11-3.699c-.797.8-1.93.961-2.528.362-.598-.6-.436-1.733.361-2.532.798-.799 1.93-.96 2.528-.361.599.599.437 1.732-.36 2.531Z" />
+                                            <path
+                                                d="M5.205 10.787a7.632 7.632 0 0 0 1.804 1.352c-1.118 1.007-4.929 2.028-5.054 1.903-.126-.127.737-4.189 1.839-5.18.346.69.837 1.35 1.411 1.925Z" />
+                                        </svg>
+                                        Damages to Opponent
+                                    </div>
+                                    <div class="progress">
+                                        <div id="damage-bar-win" class="progress-bar" role="progressbar"
+                                            style="background-color: #e6c300; color: #595959;"></div>
+                                        <div id="damage-bar-lose" class="progress-bar" role="progressbar"
+                                            style="background-color: #b3b3b3; color: #595959;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-12" style="padding-bottom: 30px;">
+                                    <div style="width: 100%; text-align: center;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-lightning-charge-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z" />
+                                        </svg>
+                                        Resources Collected
+                                    </div>
+                                    <div class="progress">
+                                        <div id="resource-bar-win" class="progress-bar" role="progressbar"
+                                            style="background-color: #e6c300; color: #595959;"></div>
+                                        <div id="resource-bar-lose" class="progress-bar" role="progressbar"
+                                            style="background-color: #b3b3b3; color: #595959;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" style="padding-top: 20px;">
+                        <div class="col-2"></div>
+                        <div class="col-8">
+                            <button id="restart-gameoverarea-button" class="btn btn-light btn-block">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="darkgray"
+                                    class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                                    <path
+                                        d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                                </svg>
+                                Restart the game
+                            </button>
+                            <button id="home-gameoverarea-button" class="btn btn-light btn-block">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="darkgray"
+                                    class="bi bi-house-fill" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z" />
+                                    <path
+                                        d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z" />
+                                </svg>
+                                Back to front page
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+    </div>
+    </div>
+
+    <script>
+        function playBackgroundMusic() {
+            const sounds = {
+                background: new Audio("assets/audios/game-play-bgm.mp3"),
+            };
+            sounds.background.currentTime = 0;
+            sounds.background.play();
+        }
+
+        function playBackgroundMusicLoop() {
+            setInterval(playBackgroundMusic, 17000);
+        }
+
+        $(window).on("focus", function () {
+            playBackgroundMusic();
+            playBackgroundMusicLoop();
+        })
+
+        $(document).ready(function () {
+            // Initialize the UI
+            UI.initialize();
+
+            // Validate the signin
+            Authentication.validate(
+                () => {
+                    FormControllButton.hide();
+                    FormControllButton.hideFormArea();
+                    UserPanel.update(Authentication.getUser());
+                    UserPanel.show();
+                    Menu.show();
+                    GameplayArea.hide()
+                    GameoverArea.hide();
+                    Socket.connect();
+                },
+                () => {
+                    FormControllButton.show();
+                    FormControllButton.showFormArea();
+                    Menu.hide();
+                    GameplayArea.hide()
+                    GameoverArea.hide();
+                }
+            );
+        });
+    </script>
+</body>
+
+</html>

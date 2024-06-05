@@ -1,4 +1,4 @@
-# COMP4021 Project - Space Lord
+# COMP4021 Group Project - Space Lord (Multiplayer Javascript Game)
 
 1.  Clone the Repo / Downlad All source files
 
